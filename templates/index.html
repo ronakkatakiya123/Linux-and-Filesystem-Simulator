@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linux File System Simulator</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="topbar">
+  <div class="dots">
+    <div class="dot" style="background:#e05555"></div>
+    <div class="dot" style="background:#e0a030"></div>
+    <div class="dot" style="background:#5dba5d"></div>
+  </div>
+  <h1>Linux File System Simulator</h1>
+  <span class="sub">ext4 &nbsp;|&nbsp; Nested Directories &nbsp;|&nbsp; Absolute &amp; Relative Paths &nbsp;|&nbsp; chmod &nbsp;|&nbsp; Disk Allocation</span>
+</div>
+
+<div class="main">
+  <!-- disk grid -->
+  <div class="disk-panel">
+    <div class="pt">Disk Block Grid — 64 blocks × 512 bytes</div>
+    <div class="disk-grid" id="dg"></div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#1e4a6e"></div>System</div>
+      <div class="li"><div class="ld" style="background:#2d6a2d"></div>Data</div>
+      <div class="li"><div class="ld" style="background:#3535aa"></div>Linked</div>
+      <div class="li"><div class="ld" style="background:#8a5a10"></div>Index</div>
+      <div class="li"><div class="ld" style="background:#1e2030"></div>Free</div>
+      <div class="li" style="margin-left:auto"><span style="color:#0d6b0d;font-size:10px">■ READ flash</span></div>
+      <div class="li"><span style="color:#b06010;font-size:10px">■ WRITE flash</span></div>
+    </div>
+  </div>
+
+  <!-- left panel -->
+  <div class="panel">
+    <div style="margin-bottom:14px">
+      <div class="sh">Allocate file</div>
+      <label>Strategy</label>
+      <div class="stabs">
+        <div class="stab active" onclick="setSt('contiguous',this)">Contiguous</div>
+        <div class="stab"        onclick="setSt('linked',this)">Linked</div>
+        <div class="stab"        onclick="setSt('indexed',this)">Indexed</div>
+      </div>
+      <label>Path (absolute or relative)</label>
+      <input type="text" id="fn" placeholder="/home/user/file.txt or notes.txt" />
+      <label>Size (KB)</label>
+      <input type="number" id="fs" value="2" min="1" max="20" />
+      <label>Content (optional)</label>
+      <input type="text" id="fc" placeholder="Hello world!" />
+      <button class="btn btn-p" onclick="allocFile()">Allocate file</button>
+      <button class="btn btn-r" onclick="resetDisk()">Reset disk</button>
+    </div>
+
+    <div>
+      <div class="sh">File system tree</div>
+      <div class="cwd-b" id="cwdB">cwd: /</div>
+      <div class="tree" id="fst">(empty)</div>
+    </div>
+  </div>
+
+  <!-- right panel -->
+  <div class="rp">
+    <div class="tw">
+      <div class="pt">Linux terminal</div>
+      <div class="term">
+        <div class="to" id="to">
+          <div class="tl ti2">Linux FS Simulator — full path support</div>
+          <div class="tl ti2">Commands: touch cat ls rm mkdir rmdir cp mv stat echo cd pwd chmod</div>
+          <div class="tl ti2">Quick demo:</div>
+          <div class="tl ti2">  mkdir -p /home/user/docs</div>
+          <div class="tl ti2">  echo "Hello Linux" > /home/user/docs/readme.txt</div>
+          <div class="tl ti2">  cd /home/user/docs</div>
+          <div class="tl ti2">  ls -l</div>
+          <div class="tl ti2">  chmod u+x readme.txt</div>
+          <div class="tl ti2">  stat readme.txt</div>
+          <div class="tl" style="margin-top:4px"></div>
+        </div>
+        <div class="tir">
+          <span class="tpl" id="pl">user@sim:/$ </span>
+          <input class="tin" id="ti" type="text" placeholder="type a command..." autocomplete="off" spellcheck="false" />
+        </div>
+      </div>
+    </div>
+    <div class="lw">
+      <div class="pt">Disk access log</div>
+      <div id="al"><div class="lem">Run a command to see disk access steps</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="sb">
+  <div>Free: <strong id="sFr">60</strong></div>
+  <div>Used: <strong id="sUs">4</strong></div>
+  <div>Inodes: <strong id="sIn">1</strong></div>
+  <div>CWD: <strong id="sCw">/</strong></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
